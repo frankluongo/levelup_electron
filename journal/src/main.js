@@ -1,6 +1,7 @@
 // Modules to control application life and create native browser window
 // const {app, BrowserWindow} = require('electron')
-const {app, BrowserWindow, Menu} = require('electron')
+const { app, BrowserWindow, dialog, Menu } = require('electron')
+const fs = require('fs');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -12,7 +13,10 @@ function createWindow () {
 
   // and load the index.html of the app.
   // ⬇️ mainWindow.loadFile('index.html') -- We are changing this below ⬇️
-  mainWindow.loadURL('http://localhost:3000');
+  //mainWindow.loadURL('http://localhost:3000');
+
+  // THIS IS FOR WORK BECAUSE DOCKER IS ON MY WORK LAPTOP
+  mainWindow.loadURL('http://localhost:3001');
 
   // START MY CODE
 
@@ -23,7 +27,11 @@ function createWindow () {
       label: "File",
       submenu: [
         {
-          label: "Open File"
+          label: "Open File",
+          accelerator: 'CmdOrCtrl+O',
+          click() {
+            openFile();
+          }
         },
         {
           label: "Open Folder"
@@ -170,3 +178,23 @@ app.on('activate', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+//
+
+// Define Function for Open File
+
+function openFile() {
+// Open file dialog looking for Markdown
+  const files = dialog.showOpenDialog(mainWindow, {
+    properties: ['openFile'],
+    filters: [{name: 'Markdown', extensions: ['md', 'markdown', 'txt']}]
+  });
+  // If no files...
+  if (!files) {
+    return;
+  }
+  const file = files[0];
+  const fileContent = fs.readFileSync(file).toString();
+  console.log(fileContent);
+  mainWindow.webContents.send('new-file', fileContent);
+}
+
