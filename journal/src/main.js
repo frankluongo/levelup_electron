@@ -7,16 +7,18 @@ const fs = require('fs');
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 
+const urlToLoad = 'http://localhost:3000'
+
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 800, height: 600})
 
   // and load the index.html of the app.
   // ⬇️ mainWindow.loadFile('index.html') -- We are changing this below ⬇️
-  //mainWindow.loadURL('http://localhost:3000');
+  mainWindow.loadURL(urlToLoad);
 
   // THIS IS FOR WORK BECAUSE DOCKER IS ON MY WORK LAPTOP
-  mainWindow.loadURL('http://localhost:3001');
+  //mainWindow.loadURL('http://localhost:3001');
 
   // START MY CODE
 
