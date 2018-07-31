@@ -6,11 +6,14 @@ import brace from 'brace';
 import 'brace/mode/markdown';
 import 'brace/theme/dracula';
 import './App.css';
+
+const settings = window.require('electron-settings')
 const { ipcRenderer } = window.require('electron');
 
 class App extends Component {
 state = {
-  loadedFile: ''
+  loadedFile: '',
+  directory: settings.get('directory') || null
 };
 
   constructor() {
@@ -22,6 +25,7 @@ state = {
       this.setState({
         directory: dir
       });
+      settings.set('directory', dir);
     });
   }
 
@@ -29,6 +33,8 @@ state = {
     return (
       <div className="App">
         <Header>Journal</Header>
+        {this.state.directory ? (
+
         <Split>
           <CodeWindow>
             <AceEditor
@@ -49,6 +55,11 @@ state = {
             </Markdown>
           </RenderedWindow>
         </Split>
+        ) : (
+          <LoadingMessage>
+            <h1> Please open a directory to get started...</h1>
+          </LoadingMessage>
+        )}
       </div>
     );
   }
@@ -69,6 +80,15 @@ const Header = styled.header`
   width: 100%;
   z-index: 10;
   -webkit-app-region: drag;
+`;
+
+const LoadingMessage = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  background: #333;
+  height: 100vh;
 `;
 
 const Split = styled.div`
