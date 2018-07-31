@@ -15,6 +15,7 @@ class App extends Component {
 state = {
   loadedFile: '',
   filesData: [],
+  activeIndex: 0,
   directory: settings.get('directory') || null
 };
 
@@ -57,12 +58,32 @@ state = {
     });
   }
 
+  changeFile = index => () => {
+    const { activeIndex } = this.state;
+
+    if (index != activeIndex) {
+      this.saveFile();
+      this.loadFile(index);
+    }
+
+
+  }
+
   loadFile = index => {
     const { filesData } = this.state;
     const content = fs.readFileSync(filesData[index].path).toString();
     this.setState({
-      loadedFile: content
+      loadedFile: content,
+      activeIndex: index
     });
+  }
+
+  saveFile = () => {
+    const { activeIndex, loadedFile, filesData } = this.state;
+    fs.writeFile(filesData[activeIndex].path, loadedFile, err => {
+      if (err) return console.log(err);
+      console.log('saved!');
+    })
   }
 
   render() {
@@ -75,7 +96,7 @@ state = {
           <FilesWindow>
             {this.state.filesData.map((file, index) =>
               (
-                <button onClick={() => this.loadFile(index)}>{file.path}</button>
+                <button onClick={this.changeFile(index)}>{file.path}</button>
               )
             )}
           </FilesWindow>
