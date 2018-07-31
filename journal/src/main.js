@@ -212,12 +212,7 @@ function openDir() {
   if(!directory) return;
 
   const dir = directory[0];
-
-  fs.readdir(dir, (err, files) => {
-    const filteredfiles = files.filter(file => file.includes('.md'));
-    const filePaths = filteredfiles.map(file => `${dir}/${file}`);
-    mainWindow.webContents.send('new-dir', filePaths, dir);
-  });
+  mainWindow.webContents.send('new-dir', dir);
 
 }
 
