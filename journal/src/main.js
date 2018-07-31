@@ -40,6 +40,13 @@ function createWindow () {
           click() {
             openDir();
           }
+        },
+        {
+          label: "Save File",
+          accelerator: 'CmdOrCtrl+S',
+          click() {
+            mainWindow.webContents.send('save-file');
+          }
         }
       ]
     },
@@ -199,7 +206,6 @@ function openFile() {
   }
   const file = files[0];
   const fileContent = fs.readFileSync(file).toString();
-  console.log(fileContent);
   mainWindow.webContents.send('new-file', fileContent);
 }
 
@@ -213,6 +219,5 @@ function openDir() {
 
   const dir = directory[0];
   mainWindow.webContents.send('new-dir', dir);
-
 }
 
