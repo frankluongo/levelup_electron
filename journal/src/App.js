@@ -18,6 +18,11 @@ state = {
     ipcRenderer.on('new-file', (event, fileContent) => {
       this.setState({ loadedFile: fileContent });
     });
+    ipcRenderer.on('new-dir', (event, filePaths, dir) => {
+      this.setState({
+        directory: dir
+      });
+    });
   }
 
   render() {

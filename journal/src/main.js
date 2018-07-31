@@ -35,14 +35,11 @@ function createWindow () {
       label: "File",
       submenu: [
         {
-          label: "Open File",
+          label: "Open Folder",
           accelerator: 'CmdOrCtrl+O',
           click() {
-            openFile();
+            openDir();
           }
-        },
-        {
-          label: "Open Folder"
         }
       ]
     },
@@ -204,5 +201,23 @@ function openFile() {
   const fileContent = fs.readFileSync(file).toString();
   console.log(fileContent);
   mainWindow.webContents.send('new-file', fileContent);
+}
+
+
+function openDir() {
+  const directory = dialog.showOpenDialog(mainWindow, {
+    properties: ['openDirectory']
+  });
+
+  if(!directory) return;
+
+  const dir = directory[0];
+
+  fs.readdir(dir, (err, files) => {
+    const filteredfiles = files.filter(file => file.includes('.md'));
+    const filePaths = filteredfiles.map(file => `${dir}/${file}`);
+    mainWindow.webContent.send('new-dir', filePaths, dir);
+  });
+
 }
 
